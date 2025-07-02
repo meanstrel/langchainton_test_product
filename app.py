@@ -255,12 +255,13 @@ if submitted:
                     st.write("피해야 할 성분 없음.")
 
             with st.expander("⚠️ 주의사항"):
-                if isinstance(cautions, list):
-                        for line in cautions:
-                            st.markdown(f"- {line}")
-                        elif isinstance(cautions, str):
+                if cautions:
+                    if isinstance(cautions, list):
+                            for line in cautions:
+                                st.markdown(f"- {line}")
+                    elif isinstance(cautions, str):
                             st.markdown(f"- {cautions}")
-                        else:
+                    else:
                             st.write("주의사항 형식을 확인할 수 없습니다.")
                 else:
                     st.write("특별한 주의사항 없음.")
