@@ -124,7 +124,7 @@ def build_rag_chain_from_categories(categories: List[str], vectorstores: dict):
 {{
   "recommended": ["성분1", "성분2", ...],
   "avoid":       ["성분A", "성분B", ...],
-  "cautions":    {{"주의사항 ...", ...}},
+  "cautions":    ["주의사항 ...", ...],
   "sources":     ["출처1", "출처2", ...]
 }}
 
