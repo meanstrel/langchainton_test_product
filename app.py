@@ -166,11 +166,10 @@ def build_user_query(age: int, gender: str, disease: str, taking: str, prefers: 
         "이 정보를 바탕으로 어떤 성분을 추천하거나 피해야 할지를 분석해 주세요."
     )
 
-
 # ──────────────────────────────────────────────
 # Ⅳ. Streamlit UI
 # ──────────────────────────────────────────────
-st.header("💊 영양제 Check RAG 챗봇")
+st.header("💊 영양제 Check!")
 
 chat_history = StreamlitChatMessageHistory(key="chat_messages")
 
@@ -233,10 +232,40 @@ if submitted:
                 st.error("⚠️ LLM 답변을 JSON으로 해석하지 못했습니다.")
                 st.stop()
             
-            # 필요 시 사용자에게 JSON 그대로 보여 줌
-            st.json(answer_json)
-
+            # JSON 파싱
             recommended = answer_json.get("recommended", [])
+            avoid = answer_json.get("avoid", [])
+            cautions = answer_json.get("cautions", {})
+            sources = answer_json.get("sources", [])
+
+            # 구조화 출력
+            st.subheader("📌 분석 결과 요약")
+
+            with st.expander("✅ 추천 성분"):
+                if recommended:
+                    st.markdown("\n".join([f"- {item}" for item in recommended]))
+                else:
+                    st.write("추천 성분 없음.")
+
+            with st.expander("🚫 피해야 할 성분"):
+                if avoid:
+                    st.markdown("\n".join([f"- {item}" for item in avoid]))
+                else:
+                    st.write("피해야 할 성분 없음.")
+
+            with st.expander("⚠️ 주의사항"):
+                if cautions:
+                    for substance, caution_text in cautions.items():
+                        st.markdown(f"**{substance}**: {caution_text}")
+                else:
+                    st.write("특별한 주의사항 없음.")
+
+            with st.expander("📚 출처"):
+                if sources:
+                    for s in sources:
+                        st.markdown(f"- {s}")
+                else:
+                    st.write("출처 없음.")
 
             # 추천 성분이 있으면 → api.py 로 전달 → 관련 제품 5개 검색
             if recommended:
@@ -246,11 +275,20 @@ if submitted:
                 #   Streamlit 화면에 결과 표시
                 # ──────────────────────────────
                 if product_docs:
-                    with st.expander("🔎 추천 성분과 연관된 제품 예시 (상위 5개)"):
-                        for idx, doc in enumerate(product_docs, 1):
-                            name = doc.metadata.get("product", "제품명 미상")
-                            st.markdown(f"**{idx}. {name}**")
-                            st.write(doc.page_content)
+                    st.subheader("💊 영양제 Check!")
+
+                    for idx, doc in enumerate(product_docs, 1):
+                        name = doc.metadata.get("product", f"제품 {idx}")
+                        content = doc.page_content.strip()
+
+                        with st.expander(f"{idx}. {name}"):
+                            # 줄바꿈 기준으로 쪼개서 한 줄씩 출력
+                            for line in content.split("\n"):
+                                line = line.strip()
+                                if line:
+                                    st.write(line)
+                else:
+                    st.info("추천 성분과 연관된 제품을 찾을 수 없습니다.")
             
             # # ── 추천 성분 → api.py 검색 함수 호출 ──
             # recommended = answer_json.get("recommended", [])
