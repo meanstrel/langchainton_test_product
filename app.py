@@ -258,10 +258,10 @@ if submitted:
                 if isinstance(cautions, list):
                         for line in cautions:
                             st.markdown(f"- {line}")
-                    elif isinstance(cautions, str):
-                        st.markdown(f"- {cautions}")
-                    else:
-                        st.write("주의사항 형식을 확인할 수 없습니다.")
+                        elif isinstance(cautions, str):
+                            st.markdown(f"- {cautions}")
+                        else:
+                            st.write("주의사항 형식을 확인할 수 없습니다.")
                 else:
                     st.write("특별한 주의사항 없음.")
 
