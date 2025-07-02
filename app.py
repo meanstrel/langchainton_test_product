@@ -115,15 +115,16 @@ def build_rag_chain_from_categories(categories: List[str], vectorstores: dict):
 추천 성분 목록, 피해야 할 성분 목록은 문헌에 근거하여 작성해야 하며, 명시적 출처를 제시하세요.
 출처 없는 주장은 허용되지 않습니다.
 문헌 내 언급이 없거나 명확하지 않은 경우, “정보 부족” 또는 “근거 없음”이라고 명시해주세요.
-반드시 “영양제의 성분”에 집중하여 분석하고, 제품명이나 생활습관 요소(예: 커피, 알코올, 녹차 등)는 언급하지 마세요.
-
+추천 성분 목록에 “영양제의 성분”에 집중하여 분석하고, 제품명이나 생활습관 요소(예: 커피, 알코올, 녹차 등)는 언급하지 마세요.
+피해야 할 성분도 반드시 “영양제의 성분”에 집중하여 분석하고, 제품명이나 생활습관 요소(예: 커피, 알코올, 녹차, 고구마 등)는 언급하지 마세요.
 성분은 한국어로만 명시해주세요
+주의사항은 사용자에게 건강 관련 주의할 사항을 한, 두 문장으로 설명해주세요
 
 [출력 형식(순수 JSON)]
 {{
   "recommended": ["성분1", "성분2", ...],
   "avoid":       ["성분A", "성분B", ...],
-  "cautions":    {{"성분1": "주의사항 ...", ...}},
+  "cautions":    {{"주의사항 ...", ...}},
   "sources":     ["출처1", "출처2", ...]
 }}
 
@@ -255,8 +256,8 @@ if submitted:
 
             with st.expander("⚠️ 주의사항"):
                 if cautions:
-                    for substance, caution_text in cautions.items():
-                        st.markdown(f"**{substance}**: {caution_text}")
+                    for caution_text in cautions.items():
+                        st.markdown(f"**{caution_text}")
                 else:
                     st.write("특별한 주의사항 없음.")
 
